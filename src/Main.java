@@ -1,48 +1,103 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        HashMap<String, Student> students = new HashMap<>();
+        HashMap<String, Student> map = new HashMap<>();
 
-        // ====================== TASK 1 ======================
-        // TODO: Добавь минимум 5 студентов (ключ = ID)
-        // Сделай минимум два студента с одинаковым GPA (для Task 3)
+        map.put("A1", new Student("Ali", 3.8, 20));
+        map.put("A2", new Student("Bek", 3.5, 21));
+        map.put("A3", new Student("Zara", 3.6, 19));
+        map.put("A4", new Student("Dan", 3.5, 22));
+        map.put("A5", new Student("Aika", 4.0, 20));
+        map.put("A6", new Student("Timur", 3.2, 23));
 
-        // TODO: Напечатай всех студентов (ID + объект)
+        for (String id : map.keySet()) {
+            System.out.println(id + " -> " + map.get(id));
+        }
 
-        // TODO: Найди студента по ID и выведи его
+        System.out.println();
+        System.out.println("Finding A3: " + map.get("A3"));
 
-        // TODO: Удали одного студента по ID
+        map.remove("A6");
 
-        // TODO: Обнови GPA у одного студента
+        Student s = map.get("A1");
+        if (s != null) {
+            s.setGpa(3.95);
+        }
 
-        // ====================== SORTING (IMPORTANT) ======================
-        // TODO: Создай ArrayList из всех студентов (students.values())
+        List<Student> list = new ArrayList<>(map.values());
 
-        // TODO 6a: Отсортируй по GPA (natural ordering) и выведи
-        // TODO 6b: Отсортируй по имени (Comparator) и выведи
+        System.out.println("\n--- Sorted by GPA ---");
+        Collections.sort(list);
+        for (Student st : list) {
+            System.out.println(st);
+        }
 
-        // ====================== TASK 2 ======================
-        System.out.println("\n=== Task 2: Top 3 by GPA ===");
-        // TODO: Создай новый список, отсортируй по GPA по убыванию, выведи первые 3
+        System.out.println("\n--- Sorted by Name ---");
+        list.sort(Comparator.comparing(Student::getName));
+        for (Student st : list) {
+            System.out.println(st);
+        }
 
-        // ====================== TASK 3 ======================
-        System.out.println("\n=== Task 3: Students with same GPA ===");
-        // TODO: Сгруппируй студентов по GPA и выведи только те, где больше 1 студента
+        System.out.println("\n=== Task 2 ===");
+        List<Student> top = new ArrayList<>(map.values());
+        top.sort((a, b) -> Double.compare(b.getGpa(), a.getGpa()));
+        for (int i = 0; i < 3 && i < top.size(); i++) {
+            System.out.println(top.get(i));
+        }
 
-        // ====================== TASK 4 ======================
-        System.out.println("\n=== Task 4: Courses ===");
-        HashMap<Course, List<Student>> courseMap = new HashMap<>();
-        // TODO: Создай 2–3 курса, добавь студентов, выведи всё
+        System.out.println("\n=== Task 3 ===");
+        HashMap<Double, List<String>> gpaMap = new HashMap<>();
+        for (Student st : map.values()) {
+            double gpa = st.getGpa();
+            gpaMap.putIfAbsent(gpa, new ArrayList<>());
+            gpaMap.get(gpa).add(st.getName());
+        }
 
-        // ====================== TASK 5 ======================
-        System.out.println("\n=== Task 5: GPA desc + Name ===");
-        // TODO: Создай Comparator (GPA убывание → если равно, то имя возрастание) и отсортируй
+        for (Double gpa : gpaMap.keySet()) {
+            List<String> names = gpaMap.get(gpa);
+            if (names.size() > 1) {
+                System.out.println("GPA " + gpa + " -> " + String.join(", ", names));
+            }
+        }
+
+        System.out.println("\n=== Task 4 ===");
+        HashMap<Course, List<Student>> courses = new HashMap<>();
+        Course math = new Course("Math");
+        Course java = new Course("Java");
+
+        courses.put(math, new ArrayList<>());
+        courses.put(java, new ArrayList<>());
+
+        courses.get(math).add(map.get("A1"));
+        courses.get(math).add(map.get("A2"));
+        courses.get(java).add(map.get("A3"));
+        courses.get(java).add(map.get("A4"));
+        courses.get(java).add(map.get("A5"));
+
+        for (Course c : courses.keySet()) {
+            System.out.println(c);
+            for (Student st : courses.get(c)) {
+                System.out.println("  " + st);
+            }
+        }
+
+        System.out.println("\n=== Task 5 ===");
+        List<Student> fin = new ArrayList<>(map.values());
+        fin.sort((a, b) -> {
+            int cmp = Double.compare(b.getGpa(), a.getGpa());
+            if (cmp != 0) {
+                return cmp;
+            }
+            return a.getName().compareTo(b.getName());
+        });
+
+        for (Student st : fin) {
+            System.out.println(st);
+        }
     }
 }
-
-
-
